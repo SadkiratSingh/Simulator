@@ -15,20 +15,22 @@ class Config{
         class Element{
             friend class Config;
             private:
-                void *elem;
+                DOMElement *elem;
             public:
                 template<typename T>int getAttribute(const char* name, T&val) const;
                 void setAttribute(const char* name, const char* val);
                 void getChildElements(const char* name, vector<Element>& v);
                 string tostring();
-                void setDomElement (void* e) {elem = e;}
+                void setDomElement (DOMElement* e) {elem = e;}
                 void*getDomElement(){return elem;}
 
         };
     public:
         void initialize(const char* filename, const char* decodekey = 0);
         Element* getRoot(){return &root;}
-        void setRoot(Element r){root = r;}
+        void setRoot(DOMElement* r){
+            root.elem = r;
+        }
         void write(const char* filename);
     private:
         Element root;
