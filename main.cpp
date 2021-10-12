@@ -6,7 +6,7 @@ int main(int argc, char*argv[]){
     char* encoding = argv[2];
     char* childname = argv[3];
     char* newfile= argv[4];
-    Config* cfg = new Config;
+    Config* cfg = new Config();
     cfg->initialize(argv[1],argv[2]);
     Config::Element* root= cfg->getRoot();
     vector<Config::Element>v;

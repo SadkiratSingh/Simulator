@@ -3,6 +3,7 @@
 #include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -17,12 +18,12 @@ class Config{
             private:
                 DOMElement *elem;
             public:
-                template<typename T>int getAttribute(const char* name, T&val) const;
+                string getAttribute(const char* name);
                 void setAttribute(const char* name, const char* val);
                 void getChildElements(const char* name, vector<Element>& v);
                 string tostring();
-                void setDomElement (DOMElement* e) {elem = e;}
-                void*getDomElement(){return elem;}
+                void setDomElement (DOMElement* e);
+                Element* getDomElement();
 
         };
     public:
@@ -31,7 +32,12 @@ class Config{
         void setRoot(DOMElement* r){
             root.elem = r;
         }
+        static void setDocLevel(DOMDocument* doc){
+            docLevel = doc;
+        }
         void write(const char* filename);
+        static DOMDocument* docLevel;
     private:
         Element root;
 };
+DOMDocument* Config::docLevel = NULL;
