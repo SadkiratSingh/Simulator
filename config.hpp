@@ -15,19 +15,19 @@ class Config{
     public:
         class Element{
             friend class Config;
-            private:
+            public:
                 DOMElement *elem;
             public:
-                string getAttribute(const char* name);
-                void setAttribute(const char* name, const char* val);
-                void getChildElements(const char* name, vector<Element>& v);
+                string getAttribute(char* name);
+                void setAttribute(char* name,char* val);
+                void getChildElements(char* name, vector<Element>& v);
                 string tostring();
-                void setDomElement (DOMElement* e);
+                void setDomElement (char* name);
                 Element* getDomElement();
 
         };
     public:
-        void initialize(const char* filename, const char* decodekey = 0);
+        void initialize(char* filename,char* decodekey);
         Element* getRoot(){return &root;}
         void setRoot(DOMElement* r){
             root.elem = r;
@@ -35,9 +35,11 @@ class Config{
         static void setDocLevel(DOMDocument* doc){
             docLevel = doc;
         }
-        void write(const char* filename);
+        static DOMDocument* getDocLevel(){
+            return docLevel;
+        }
+        void write(char* filename);
         static DOMDocument* docLevel;
-    private:
+    public:
         Element root;
 };
-DOMDocument* Config::docLevel = NULL;

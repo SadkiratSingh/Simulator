@@ -2,12 +2,14 @@ CC = g++
 CFLAGS = -c -Wall -g -I./
 LDFLAGS = -lxerces-c-3.2 -std=c++11
 
-all: MyDOMParser
+all: XMLDOMParser
 
-MyDOMParser: MyDOMParser.o
-	$(CC) MyDOMParser.o $(LDFLAGS) -o MyDOMParser
-MyDOMParser.o: MyDOMParser.cpp
-	$(CC) $(CFLAGS) MyDOMParser.cpp -o MyDOMParser.o
+XMLDOMParser: main.o config.o
+	$(CC) main.o config.o $(LDFLAGS) -o XMLDOMParser
+main.o: main.cpp
+	$(CC) $(CFLAGS) main.cpp -o main.o
+config.o: config.cpp
+	$(CC) $(CFLAGS) config.cpp -o config.o
 	
 clean:
-	rm -f *.o MyDOMParser
+	rm -f *.o XMLDOMParser

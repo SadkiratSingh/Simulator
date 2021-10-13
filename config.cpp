@@ -1,6 +1,8 @@
-#include<config.hpp>
+#include "config.hpp"
 
-void Config::initialize(const char* filename, const char* decodekey = 0){
+DOMDocument* Config::docLevel = NULL;
+
+void Config::initialize(char* filename,char* decodekey){
     try {
         XMLPlatformUtils::Initialize();
     }
@@ -18,13 +20,21 @@ void Config::initialize(const char* filename, const char* decodekey = 0){
     parser->setErrorHandler(errHandler);
 
     try {
+        //t1
         parser->parse(filename);
-        cout<<"Parsing done";
+        cout<<"Parsing done"<<endl;
+        
+        //t2
         DOMDocument* doc = parser->adoptDocument();
         Config::setDocLevel(doc);
+        char* rootNodeName = XMLString::transcode(Config::docLevel->getNodeName());
+        cout<<"DocumentLevel: "<<rootNodeName<<endl;
         DOMElement* rootElem = doc->getDocumentElement();
-        Config* cfg = new Config();
-        cfg->setRoot(rootElem);
+        
+        //t3
+        this->setRoot(rootElem);
+        char* configRootName = XMLString::transcode(this->getRoot()->elem->getNodeName());
+        cout<<"configRootName: "<<configRootName<<endl;
     }
     catch (const XMLException& toCatch) {
         char* message = XMLString::transcode(toCatch.getMessage());
@@ -44,47 +54,62 @@ void Config::initialize(const char* filename, const char* decodekey = 0){
     delete parser;
     delete errHandler;
     //doubt in below line.
-    XMLPlatformUtils::Terminate();
+    //XMLPlatformUtils::Terminate();
 }
 
-void Config::Element::setAttribute(const char* name, const char* val){
+void Config::Element::setAttribute(char* name, char* val){
     this->elem->setAttribute(XMLString::transcode(name),XMLString::transcode(val));
 }
 
-string Config::Element::getAttribute(const char* name){
-    return string (XMLString::transcode((this->elem->getAttribute(XMLString::transcode(name)))));
+string Config::Element::getAttribute(char* name){
+    return string(XMLString::transcode((this->elem->getAttribute(XMLString::transcode(name)))));
 }
 
-void Config::Element::setDomElement(DOMElement* e){
+void Config::Element::setDomElement(char* name){
+    //cout<<XMLString::transcode(Config::docLevel->getNodeName());
+    //cout<<XMLString::transcode(Config::docLevel->getDocumentElement()->getNodeName());
+    //cout<<XMLString::transcode(Config::docLevel->getDocumentElement()->getAttribute(XMLString::transcode("logLevel")));
+    DOMElement* e = static_cast<DOMElement*>(Config::docLevel->getElementsByTagName(XMLString::transcode(name))->item(0));
+    //t4
+    char* e_name = XMLString::transcode(e->getNodeName());
+    cout<<"current node name: "<<e_name<<endl;
     this->elem = e;
 }
 
 Config::Element* Config::Element::getDomElement(){
+    //t5
+    char* e_name = XMLString::transcode(this->elem->getNodeName());
+    cout<<"current node name: "<<e_name<<endl;
     return this;
 }
 
 string Config::Element::tostring(){
     string s(XMLString::transcode(this->elem->getNodeName()));
-    cout<<s;
+    cout<<"node name: "<<s;
     return s;
 }
 
-void Config::Element::getChildElements(const char* name, vector<Element>& v){
-    DOMNodeList* itemList = Config::docLevel->getElementsByTagName(XMLString::transcode(name));
-    DOMNode* firstItem = itemList->item(0);
-    if(firstItem->hasChildNodes()){
-        DOMNodeList* childList = firstItem->getChildNodes();
+void Config::Element::getChildElements(char* name, vector<Element>& v){
+    // DOMNodeList* itemList = Config::docLevel->getElementsByTagName(XMLString::transcode(name));
+    // DOMNode* firstItem = itemList->item(0);
+    this->setDomElement(name);
+    if(this->elem->hasChildNodes()){
+        DOMNodeList* childList = this->elem->getChildNodes();
         for(XMLSize_t j =0;j<childList->getLength();j++){
+            //cout<<childList->item(j)<<endl;
             Config::Element e;
-            e.elem = dynamic_cast<DOMElement*>(childList->item(j));
+            e.elem = static_cast<DOMElement*>(childList->item(j));
             v.push_back(e);
+            //cout<<e.elem<<endl;
+            //t6
+            cout<<j<<". "<<XMLString::transcode(e.elem->getNodeName())<<endl;
         }
     }
 }
 
-void Config::write(const char* filename){
+void Config::write(char* filename){
     //doubt below
-    DOMImplementation* t = DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("core"));
+    DOMImplementation* t = DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
     DOMDocument* d = Config::docLevel;
     DOMLSSerializer *theWriter = ((DOMImplementationLS*)t)->createLSSerializer();
     DOMLSOutput *theOutputDesc = ((DOMImplementationLS*)t)->createLSOutput();
