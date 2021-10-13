@@ -97,12 +97,14 @@ void Config::Element::getChildElements(char* name, vector<Element>& v){
         DOMNodeList* childList = elem->getChildNodes();
         for(XMLSize_t j =0;j<childList->getLength();j++){
             //cout<<childList->item(j)<<endl;
-            Config::Element e;
-            e.elem = static_cast<DOMElement*>(childList->item(j));
-            v.push_back(e);
-            //cout<<e.elem<<endl;
-            //t6
-            cout<<j<<". "<<XMLString::transcode(e.elem->getNodeName())<<endl;
+            if(string(XMLString::transcode(childList->item(j)->getNodeName())) != "#text"){
+                Config::Element e;
+                e.elem = static_cast<DOMElement*>(childList->item(j));
+                v.push_back(e);
+                //cout<<e.elem<<endl;
+                //t6
+                cout<<"Child Element: "<<XMLString::transcode(e.elem->getNodeName())<<endl;
+            }
         }
     }
 }

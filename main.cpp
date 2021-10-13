@@ -30,7 +30,7 @@ int main(int argc, char*argv[]){
     //Config::Element* root= cfg->getRoot();
     vector<Config::Element>v;
     ele->getChildElements(elementname,v);
-    cout<<"current element's attribute: "<<ele->getAttribute(attName)<<endl;
+    cout<<"current element's "<<attName<<": "<<ele->getAttribute(attName)<<endl;
     ele->setAttribute(attName,attVal);
     // for(int i=0; i<v.size();i++){
     //     //do somethingto test setAttribute and getAttribute.
