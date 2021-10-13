@@ -32,8 +32,8 @@ void Config::initialize(char* filename,char* decodekey){
         DOMElement* rootElem = doc->getDocumentElement();
         
         //t3
-        this->setRoot(rootElem);
-        char* configRootName = XMLString::transcode(this->getRoot()->elem->getNodeName());
+        setRoot(rootElem);
+        char* configRootName = XMLString::transcode(getRoot()->elem->getNodeName());
         cout<<"configRootName: "<<configRootName<<endl;
     }
     catch (const XMLException& toCatch) {
@@ -58,11 +58,11 @@ void Config::initialize(char* filename,char* decodekey){
 }
 
 void Config::Element::setAttribute(char* name, char* val){
-    this->elem->setAttribute(XMLString::transcode(name),XMLString::transcode(val));
+    elem->setAttribute(XMLString::transcode(name),XMLString::transcode(val));
 }
 
 string Config::Element::getAttribute(char* name){
-    return string(XMLString::transcode((this->elem->getAttribute(XMLString::transcode(name)))));
+    return string(XMLString::transcode(elem->getAttribute(XMLString::transcode(name))));
 }
 
 void Config::Element::setDomElement(char* name){
@@ -73,18 +73,18 @@ void Config::Element::setDomElement(char* name){
     //t4
     char* e_name = XMLString::transcode(e->getNodeName());
     cout<<"current node name: "<<e_name<<endl;
-    this->elem = e;
+    elem = e;
 }
 
 Config::Element* Config::Element::getDomElement(){
     //t5
-    char* e_name = XMLString::transcode(this->elem->getNodeName());
+    char* e_name = XMLString::transcode(elem->getNodeName());
     cout<<"current node name: "<<e_name<<endl;
     return this;
 }
 
 string Config::Element::tostring(){
-    string s(XMLString::transcode(this->elem->getNodeName()));
+    string s(XMLString::transcode(elem->getNodeName()));
     cout<<"node name: "<<s;
     return s;
 }
@@ -92,9 +92,9 @@ string Config::Element::tostring(){
 void Config::Element::getChildElements(char* name, vector<Element>& v){
     // DOMNodeList* itemList = Config::docLevel->getElementsByTagName(XMLString::transcode(name));
     // DOMNode* firstItem = itemList->item(0);
-    this->setDomElement(name);
-    if(this->elem->hasChildNodes()){
-        DOMNodeList* childList = this->elem->getChildNodes();
+    setDomElement(name);
+    if(elem->hasChildNodes()){
+        DOMNodeList* childList = elem->getChildNodes();
         for(XMLSize_t j =0;j<childList->getLength();j++){
             //cout<<childList->item(j)<<endl;
             Config::Element e;
