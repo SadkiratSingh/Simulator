@@ -15,7 +15,7 @@ class Config{
     public:
         class Element{
             friend class Config;
-            public:
+            private:
                 DOMElement *elem;
             public:
                 string getAttribute(char* name);
@@ -40,6 +40,6 @@ class Config{
         }
         void write(char* filename);
         static DOMDocument* docLevel;
-    public:
+    private:
         Element root;
 };
